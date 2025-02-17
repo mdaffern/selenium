@@ -1126,7 +1126,6 @@ namespace :all do
     Rake::Task['node:version'].invoke(version)
     Rake::Task['py:version'].invoke(version)
     Rake::Task['dotnet:version'].invoke(version)
-    Rake::Task['rust:version'].invoke(version)
   end
 end
 
