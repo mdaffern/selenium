@@ -79,7 +79,7 @@ jobs:
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
       - name: Undo rust changelog commit
-        run: git reset HEAD~1
+        run: git reset --hard trunk
       - name: Update everything including early release CDP
         if: ${{ github.event.inputs.chrome_channel == 'early-stable' }}
         run: ./go all:prepare[${{ github.event.inputs.version }},Beta]
