@@ -82,6 +82,39 @@ module Selenium
             expect(driver.execute_script('return window.devicePixelRatio')).to eq(2.0)
           end
         end
+
+        it 'accepts users prompts without text' do
+          reset_driver!(web_socket_url: true) do |driver|
+            browsing_context = described_class.new(driver)
+            window = browsing_context.create
+
+            browsing_context.handle_user_prompt(window, accept: true)
+
+            expect(driver.page_source).to include('hello')
+          end
+        end
+
+        it 'accepts users prompts with text' do
+          reset_driver!(web_socket_url: true) do |driver|
+            browsing_context = described_class.new(driver)
+            window = browsing_context.create
+
+            browsing_context.handle_user_prompt(window, accept: true, text: 'Hello, world!')
+
+            expect(driver.page_source).to include('hello')
+          end
+        end
+
+        it 'rejects users prompts' do
+          reset_driver!(web_socket_url: true) do |driver|
+            browsing_context = described_class.new(driver)
+            window = browsing_context.create
+
+            browsing_context.handle_user_prompt(window, accept: false)
+
+            expect(driver.page_source).to include('goodbye')
+          end
+        end
       end
     end # BiDi
   end # WebDriver
