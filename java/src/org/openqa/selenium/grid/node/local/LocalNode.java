@@ -139,8 +139,7 @@ public class LocalNode extends Node implements Closeable {
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Cache<SessionId, TemporaryFilesystem> uploadsTempFileSystem;
-  private final Cache<UUID, TemporaryFilesystem> downloadsTempFileSystem;
-  private final Cache<SessionId, UUID> sessionToDownloadsDir;
+  private final Cache<SessionId, TemporaryFilesystem> downloadsTempFileSystem;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
   private final Runnable shutdown;
@@ -198,7 +197,7 @@ public class LocalNode extends Node implements Closeable {
             : healthCheck;
 
     // Do not clear this cache automatically using a timer.
-    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
+    // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.uploadsTempFileSystem =
         CacheBuilder.newBuilder()
             .removalListener(
@@ -213,11 +212,11 @@ public class LocalNode extends Node implements Closeable {
             .build();
 
     // Do not clear this cache automatically using a timer.
-    // It will be explicitly cleaned up, as and when "sessionToDownloadsDir" is auto cleaned.
+    // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
     this.downloadsTempFileSystem =
         CacheBuilder.newBuilder()
             .removalListener(
-                (RemovalListener<UUID, TemporaryFilesystem>)
+                (RemovalListener<SessionId, TemporaryFilesystem>)
                     notification ->
                         Optional.ofNullable(notification.getValue())
                             .ifPresent(
@@ -225,32 +224,6 @@ public class LocalNode extends Node implements Closeable {
                                   fs.deleteTemporaryFiles();
                                   fs.deleteBaseDir();
                                 }))
-            .build();
-
-    // Do not clear this cache automatically using a timer.
-    // It will be explicitly cleaned up, as and when "currentSessions" is auto cleaned.
-    this.sessionToDownloadsDir =
-        CacheBuilder.newBuilder()
-            .removalListener(
-                (RemovalListener<SessionId, UUID>)
-                    notification -> {
-                      Optional.ofNullable(notification.getValue())
-                          .ifPresent(
-                              value -> {
-                                downloadsTempFileSystem.invalidate(value);
-                                LOG.fine(
-                                    "Removing Downloads folder associated with "
-                                        + notification.getKey());
-                              });
-                      Optional.ofNullable(notification.getKey())
-                          .ifPresent(
-                              value -> {
-                                uploadsTempFileSystem.invalidate(value);
-                                LOG.fine(
-                                    "Removing Uploads folder associated with "
-                                        + notification.getKey());
-                              });
-                    })
             .build();
 
     this.currentSessions =
@@ -386,15 +359,6 @@ public class LocalNode extends Node implements Closeable {
     return Math.toIntExact(n);
   }
 
-  @VisibleForTesting
-  public UUID getDownloadsIdForSession(SessionId id) {
-    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
-    if (uuid == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    return uuid;
-  }
-
   @ManagedAttribute(name = "MaxSessions")
   public int getMaxSessionCount() {
     return maxSessionCount;
@@ -508,21 +472,32 @@ public class LocalNode extends Node implements Closeable {
         return Either.left(new RetrySessionRequestException("Drain after session count reached."));
       }
 
-      UUID uuidForSessionDownloads = UUID.randomUUID();
       Capabilities desiredCapabilities = sessionRequest.getDesiredCapabilities();
+      TemporaryFilesystem downloadsTfs;
       if (managedDownloadsRequested(desiredCapabilities)) {
-        Capabilities enhanced = setDownloadsDirectory(uuidForSessionDownloads, desiredCapabilities);
+        UUID uuidForSessionDownloads = UUID.randomUUID();
+
+        downloadsTfs =
+            TemporaryFilesystem.getTmpFsBasedOn(
+                TemporaryFilesystem.getDefaultTmpFS()
+                    .createTempDir("uuid", uuidForSessionDownloads.toString()));
+
+        Capabilities enhanced = setDownloadsDirectory(downloadsTfs, desiredCapabilities);
         enhanced = desiredCapabilities.merge(enhanced);
         sessionRequest =
             new CreateSessionRequest(
                 sessionRequest.getDownstreamDialects(), enhanced, sessionRequest.getMetadata());
+      } else {
+        downloadsTfs = null;
       }
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
-        sessionToDownloadsDir.put(session.getId(), uuidForSessionDownloads);
+        if (downloadsTfs != null) {
+          downloadsTempFileSystem.put(session.getId(), downloadsTfs);
+        }
         currentSessions.put(session.getId(), slotToUse);
 
         SessionId sessionId = session.getId();
@@ -558,6 +533,10 @@ public class LocalNode extends Node implements Closeable {
                 getEncoder(session.getDownstreamDialect()).apply(externalSession)));
       } else {
         slotToUse.release();
+        if (downloadsTfs != null) {
+          downloadsTfs.deleteTemporaryFiles();
+          downloadsTfs.deleteBaseDir();
+        }
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.ABORTED);
         span.addEvent("Unable to create session with the driver", attributeMap);
@@ -576,15 +555,8 @@ public class LocalNode extends Node implements Closeable {
         && Boolean.parseBoolean(downloadsEnabled.toString());
   }
 
-  private Capabilities setDownloadsDirectory(UUID uuid, Capabilities caps) {
-    File tempDir;
-    try {
-      TemporaryFilesystem tempFS = getDownloadsFilesystem(uuid);
-      //      tempDir = tempFS.createTempDir("download", "file");
-      tempDir = tempFS.createTempDir("download", "");
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+  private Capabilities setDownloadsDirectory(TemporaryFilesystem downloadsTfs, Capabilities caps) {
+    File tempDir = downloadsTfs.createTempDir("download", "");
     if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
       ImmutableMap<String, Serializable> map =
           ImmutableMap.of(
@@ -700,16 +672,8 @@ public class LocalNode extends Node implements Closeable {
   }
 
   @Override
-  public TemporaryFilesystem getDownloadsFilesystem(UUID uuid) throws IOException {
-    try {
-      return downloadsTempFileSystem.get(
-          uuid,
-          () ->
-              TemporaryFilesystem.getTmpFsBasedOn(
-                  TemporaryFilesystem.getDefaultTmpFS().createTempDir("uuid", uuid.toString())));
-    } catch (ExecutionException e) {
-      throw new IOException(e);
-    }
+  public TemporaryFilesystem getDownloadsFilesystem(SessionId sessionId) throws IOException {
+    return downloadsTempFileSystem.getIfPresent(sessionId);
   }
 
   @Override
@@ -746,11 +710,7 @@ public class LocalNode extends Node implements Closeable {
               + "[--enable-managed-downloads] and restart the node";
       throw new WebDriverException(msg);
     }
-    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
-    if (uuid == null) {
-      throw new NoSuchSessionException("Cannot find session with id: " + id);
-    }
-    TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
+    TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(id);
     if (tempFS == null) {
       String msg =
           "Cannot find downloads file system for session id: "
@@ -860,8 +820,11 @@ public class LocalNode extends Node implements Closeable {
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
 
-    if (sessionToDownloadsDir.getIfPresent(id) != null) {
-      sessionToDownloadsDir.invalidate(id);
+    if (downloadsTempFileSystem.getIfPresent(id) != null) {
+      downloadsTempFileSystem.invalidate(id);
+    }
+    if (uploadsTempFileSystem.getIfPresent(id) != null) {
+      uploadsTempFileSystem.invalidate(id);
     }
 
     SessionSlot slot = currentSessions.getIfPresent(id);
