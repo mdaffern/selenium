@@ -1,4 +1,4 @@
-// <copyright file="UserPromptOpenedEventArgs.cs" company="Selenium Committers">
+// <copyright file="UserPromptHandler.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,21 +17,26 @@
 // under the License.
 // </copyright>
 
-using System.Text.Json.Serialization;
+namespace OpenQA.Selenium.BiDi.Modules.Session;
 
-namespace OpenQA.Selenium.BiDi.Modules.BrowsingContext;
-
-public record UserPromptOpenedEventArgs(BiDi BiDi, BrowsingContext Context, Session.UserPromptHandlerType Handler, UserPromptType Type, string Message)
-    : BrowsingContextEventArgs(BiDi, Context)
+public record UserPromptHandler
 {
-    [JsonInclude]
-    public string? DefaultValue { get; internal set; }
+    public UserPromptHandlerType? Alert { get; set; }
+
+    public UserPromptHandlerType? BeforeUnload { get; set; }
+
+    public UserPromptHandlerType? Confirm { get; set; }
+
+    public UserPromptHandlerType? Default { get; set; }
+
+    public UserPromptHandlerType? File { get; set; }
+
+    public UserPromptHandlerType? Prompt { get; set; }
 }
 
-public enum UserPromptType
+public enum UserPromptHandlerType
 {
-    Alert,
-    Confirm,
-    Prompt,
-    BeforeUnload
+    Accept,
+    Dismiss,
+    Ignore
 }
