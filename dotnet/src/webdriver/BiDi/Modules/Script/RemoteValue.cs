@@ -55,12 +55,12 @@ public abstract record RemoteValue
 {
     public static implicit operator int(RemoteValue remoteValue) => (int)((Number)remoteValue).Value;
     public static implicit operator long(RemoteValue remoteValue) => (long)((Number)remoteValue).Value;
-    public static implicit operator string(RemoteValue remoteValue)
+    public static implicit operator string?(RemoteValue remoteValue)
     {
         return remoteValue switch
         {
             String stringValue => stringValue.Value,
-            Null => null!,
+            Null => null,
             _ => throw new BiDiException($"Cannot convert {remoteValue} to string")
         };
     }
@@ -158,7 +158,7 @@ public abstract record RemoteValue
 
         public InternalId? InternalId { get; set; }
 
-        public IDictionary<string, RemoteValue>? Value { get; set; }
+        public IReadOnlyList<IReadOnlyList<RemoteValue>>? Value { get; set; }
     }
 
     public record Set : RemoteValue
