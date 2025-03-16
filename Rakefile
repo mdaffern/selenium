@@ -893,22 +893,19 @@ namespace :java do
 
     file_path = 'MODULE.bazel'
     content = File.read(file_path)
-    # For some reason ./go wrapper is not outputting from Open3, so cannot use Bazel class directly
-    output = `bazel run @maven//:outdated`
-
-    output.scan(/\S+ \[\S+-alpha\]/).each do |match|
-      puts "WARNING — Cannot automatically update alpha version of: #{match}"
+    output = nil
+    Bazel.execute('run', [], '@maven//:outdated') do |out|
+      output = out
     end
 
     versions = output.scan(/(\S+) \[\S+ -> (\S+)\]/).to_h
     versions.each do |artifact, version|
       if artifact.match?('graphql')
+        # https://github.com/graphql-java/graphql-java/discussions/3187
         puts 'WARNING — Cannot automatically update graphql'
         next
       end
-
-      replacement = artifact.include?('googlejavaformat') ? "#{artifact}:jar:#{version}" : "#{artifact}:#{version}"
-      content.gsub!(/#{artifact}:(jar:)?\d+\.\d+[^\\"]+/, replacement)
+      content.sub!(/#{Regexp.escape(artifact)}:([\d.-]+(?:[-.]?[A-Za-z0-9]+)*)/, "#{artifact}:#{version}")
     end
     File.write(file_path, content)
 
