@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.DevTools
         [
             133,
             132,
-            131,
+            134,
             85
         ];
 
@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.DevTools
         {
             133 => new V133.V133Domains(session),
             132 => new V132.V132Domains(session),
-            131 => new V131.V131Domains(session),
+            134 => new V134.V134Domains(session),
             85 => new V85.V85Domains(session),
             _ => null
         };

@@ -1,4 +1,4 @@
-// <copyright file="V131JavaScript.cs" company="Selenium Committers">
+// <copyright file="V134JavaScript.cs" company="Selenium Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -17,29 +17,29 @@
 // under the License.
 // </copyright>
 
-using OpenQA.Selenium.DevTools.V131.Page;
-using OpenQA.Selenium.DevTools.V131.Runtime;
+using OpenQA.Selenium.DevTools.V134.Page;
+using OpenQA.Selenium.DevTools.V134.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenQA.Selenium.DevTools.V131
+namespace OpenQA.Selenium.DevTools.V134
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 131 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 134 of the DevTools Protocol.
     /// </summary>
-    public class V131JavaScript : JavaScript
+    public class V134JavaScript : JavaScript
     {
         private readonly RuntimeAdapter runtime;
         private readonly PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V131JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V134JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="runtime"/> or <paramref name="page"/> are <see langword="null"/>.</exception>
-        public V131JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V134JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
             this.page = page ?? throw new ArgumentNullException(nameof(page));
