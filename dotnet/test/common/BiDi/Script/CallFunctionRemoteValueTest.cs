@@ -177,7 +177,7 @@ public class CallFunctionRemoteValueTest : BiDiTestFixture
         var response = await context.Script.CallFunctionAsync("() => { return /foo*/g; }", false);
 
         Assert.That(response.Result, Is.AssignableTo<RegExpRemoteValue>());
-        Assert.That(response.Result, Is.EqualTo(new RegExpRemoteValue(new RegExpRemoteValue.RegExpValue("foo*") { Flags = "g" })));
+        Assert.That(response.Result, Is.EqualTo(new RegExpRemoteValue(new RegExpValue("foo*") { Flags = "g" })));
     }
 
     [Test]

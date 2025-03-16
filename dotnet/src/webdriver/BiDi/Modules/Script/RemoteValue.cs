@@ -141,16 +141,11 @@ public record FunctionRemoteValue : RemoteValue
     public InternalId? InternalId { get; set; }
 }
 
-public record RegExpRemoteValue(RegExpRemoteValue.RegExpValue Value) : RemoteValue
+public record RegExpRemoteValue(RegExpValue Value) : RemoteValue
 {
     public Handle? Handle { get; set; }
 
     public InternalId? InternalId { get; set; }
-
-    public record RegExpValue(string Pattern)
-    {
-        public string? Flags { get; set; }
-    }
 }
 
 public record DateRemoteValue(string Value) : RemoteValue

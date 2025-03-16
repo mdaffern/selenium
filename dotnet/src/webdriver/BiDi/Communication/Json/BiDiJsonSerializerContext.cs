@@ -41,7 +41,6 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 [JsonSerializable(typeof(Modules.Script.ObjectRemoteValue))]
 [JsonSerializable(typeof(Modules.Script.FunctionRemoteValue))]
 [JsonSerializable(typeof(Modules.Script.RegExpRemoteValue))]
-[JsonSerializable(typeof(Modules.Script.RegExpRemoteValue.RegExpValue), TypeInfoPropertyName = "Script_RegExpRemoteValue_RegExpValue")]
 [JsonSerializable(typeof(Modules.Script.DateRemoteValue))]
 [JsonSerializable(typeof(Modules.Script.MapRemoteValue))]
 [JsonSerializable(typeof(Modules.Script.SetRemoteValue))]

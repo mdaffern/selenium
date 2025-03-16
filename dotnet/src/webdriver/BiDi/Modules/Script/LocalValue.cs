@@ -112,12 +112,6 @@ public record MapLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalV
 
 public record ObjectLocalValue(IEnumerable<IEnumerable<LocalValue>> Value) : LocalValue;
 
-public record RegExpLocalValue(RegExpLocalValue.RegExpValue Value) : LocalValue
-{
-    public record RegExpValue(string Pattern)
-    {
-        public string? Flags { get; set; }
-    }
-}
+public record RegExpLocalValue(RegExpValue Value) : LocalValue;
 
 public record SetLocalValue(IEnumerable<LocalValue> Value) : LocalValue;

@@ -281,7 +281,7 @@ class CallFunctionLocalValueTest : BiDiTestFixture
     [Test]
     public void CanCallFunctionWithArgumentRegExp()
     {
-        var arg = new RegExpLocalValue(new RegExpLocalValue.RegExpValue("foo*") { Flags = "g" });
+        var arg = new RegExpLocalValue(new RegExpValue("foo*") { Flags = "g" });
 
         Assert.That(async () =>
         {
