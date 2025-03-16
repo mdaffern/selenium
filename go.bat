@@ -1,10 +1,46 @@
 @echo off
-SETLOCAL
+SETLOCAL EnableDelayedExpansion
 
 REM we want jruby-complete to take care of all things ruby
 SET GEM_HOME=
 SET GEM_PATH=
 
-SET JAVA_OPTS=-client -Xmx4096m -XX:ReservedCodeCacheSize=512m --add-modules java.se --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED
+REM The first argument is always the Rake task name
+SET task=%1
 
-java %JAVA_OPTS% -jar third_party\jruby\jruby-complete.jar -X-C -S rake %*
+REM Check for arguments
+IF "%task%"=="" (
+  echo No task specified
+  exit /b 1
+)
+
+REM Shift the task off and get the remaining arguments
+SHIFT
+
+REM Leave task alone if already passing in arguments the normal way
+ECHO %task% | FINDSTR /C:"[" >NUL
+IF %ERRORLEVEL% EQU 0 (
+  GOTO execute
+)
+
+REM Process remaining arguments
+SET args=
+:process_args
+IF "%1"=="" GOTO done_args
+IF "!args!"=="" (
+  SET args=%1
+) ELSE (
+  SET args=!args!,%1
+)
+SHIFT
+GOTO process_args
+
+:done_args
+REM If there are any arguments, format them as task[arg1,arg2,...]
+IF NOT "!args!"=="" (
+  SET task=%task%[!args!]
+  ECHO Executing rake task: %task%
+)
+
+:execute
+java %JAVA_OPTS% -jar third_party\jruby\jruby-complete.jar -X-C -S rake %task%
