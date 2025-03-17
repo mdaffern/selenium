@@ -1,5 +1,4 @@
 CDP_VERSIONS = [
-    "v85",  # Required by Firefox
     "v134",
     "v132",
     "v133",
