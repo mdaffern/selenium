@@ -119,7 +119,6 @@ namespace OpenQA.Selenium.BiDi.Communication.Json;
 
 [JsonSerializable(typeof(Modules.BrowsingContext.UserPromptOpenedEventArgs))]
 [JsonSerializable(typeof(Modules.BrowsingContext.UserPromptClosedEventArgs))]
-[JsonSerializable(typeof(Modules.BrowsingContext.Origin), TypeInfoPropertyName = "BrowsingContext_Origin")]
 
 [JsonSerializable(typeof(Modules.Network.ContinueWithAuthParameters.Default), TypeInfoPropertyName = "Network_ContinueWithAuthParameters_Default")]
 [JsonSerializable(typeof(Modules.Network.AddInterceptCommand))]
