@@ -24,6 +24,7 @@ module Selenium
     describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
       it_behaves_like 'driver that can be started concurrently', exclude: [
         {browser: %i[safari safari_preview]},
+        {browser: :firefox, rbe: true, reason: 'https://github.com/mozilla/geckodriver/issues/2219'},
         {driver: :remote, rbe: true, reason: 'Cannot start 2+ drivers at once.'}
       ]
 
