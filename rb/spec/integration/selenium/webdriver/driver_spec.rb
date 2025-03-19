@@ -22,6 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver, exclusive: {bidi: false, reason: 'Not yet implemented with BiDi'} do
+      after { reset_driver! if GlobalTestEnv.rbe? && GlobalTestEnv.browser == :chrome }
+
       it_behaves_like 'driver that can be started concurrently', exclude: [
         {browser: %i[safari safari_preview]},
         {browser: :firefox, reason: 'https://github.com/SeleniumHQ/selenium/issues/15451'},

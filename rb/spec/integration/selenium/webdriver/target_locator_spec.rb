@@ -31,6 +31,8 @@ module Selenium
         (handles - [driver.window_handle]).each do |handle|
           driver.switch_to.window(handle) { driver.close }
         end
+      rescue Selenium::WebDriver::Error::WebDriverError
+        reset_driver!
       end
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
