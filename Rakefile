@@ -1118,26 +1118,30 @@ namespace :all do
     # Note that this does not include Rust version changes that are handled in separate rake:version task
     # TODO: These files are all defined in other tasks; remove duplication
     Rake::Task['all:version'].invoke(version)
-    commit!("FIX CHANGELOGS BEFORE MERGING!\n\nUpdate versions and change logs to release Selenium #{java_version}",
-            ['dotnet/CHANGELOG',
-             'dotnet/selenium-dotnet-version.bzl',
-             'java/CHANGELOG',
+    commit!("Update Version in all bindings to #{java_version}",
+            ['dotnet/selenium-dotnet-version.bzl',
              'java/version.bzl',
-             'javascript/node/selenium-webdriver/CHANGES.md',
+             'javascript/node/selenium-webdriver/BUILD.bazel',
              'javascript/node/selenium-webdriver/package.json',
              'py/docs/source/conf.py',
+             'py/pyproject.toml',
              'py/selenium/__init__.py',
              'py/selenium/webdriver/__init__.py',
              'py/BUILD.bazel',
-             'py/CHANGES',
              'rb/lib/selenium/webdriver/version.rb',
-             'rb/CHANGES',
              'rb/Gemfile.lock',
-             'rust/CHANGELOG.md',
              'rust/BUILD.bazel',
              'rust/Cargo.Bazel.lock',
              'rust/Cargo.toml',
              'rust/Cargo.lock'])
+
+    commit!("FIX CHANGELOGS BEFORE MERGING! #{java_version}",
+            ['dotnet/CHANGELOG',
+             'java/CHANGELOG',
+             'javascript/node/selenium-webdriver/CHANGES.md',
+             'py/CHANGES',
+             'rb/CHANGES',
+             'rust/CHANGELOG.md'])
   end
 
   desc 'Update all versions'
