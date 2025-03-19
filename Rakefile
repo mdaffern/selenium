@@ -1110,7 +1110,7 @@ namespace :all do
     commit!('Update selenium manager version', ['common/selenium_manager.bzl'])
 
     Rake::Task['java:update'].invoke
-    commit!('Update Maven Dependencies', ['java/maven_deps.bzl', 'java/maven_install.json'])
+    commit!('Update Maven Dependencies', ['MODULE.bazel', 'java/maven_install.json'])
 
     Rake::Task['authors'].invoke
     commit!('Update authors file', ['AUTHORS'])
