@@ -1218,16 +1218,25 @@ end
 
 def update_changelog(version, language, path, changelog, header)
   tag = previous_tag(version, language)
-  log = if language == 'javascript'
-          `git --no-pager log #{tag}...HEAD --pretty=format:"- %s" --reverse #{path}`
-        else
-          `git --no-pager log #{tag}...HEAD --pretty=format:"* %s" --reverse #{path}`
-        end
-  commits = log.split('>>>').map { |entry|
-    lines = entry.split("\n")
-    lines.reject! { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
-    lines.join("\n")
-  }.join("\n>>>")
+  bullet = language == 'javascript' ? '- ' : '* '
+  commit_delimiter = '===DELIM==='
+  tags_to_remove = /\[(dotnet|rb|py|java|js|rust)\]:?\s?/
+
+  command = "git --no-pager log #{tag}...HEAD --pretty=format:\"%s%n%b#{commit_delimiter}\" --reverse #{path}"
+  puts "Executing git command: #{command}"
+
+  log = `#{command}`
+
+  commits = log.split(commit_delimiter).map { |commit|
+    lines = commit.gsub(tags_to_remove, '').strip.lines.map(&:chomp)
+    subject = "#{bullet}#{lines[0]}"
+
+    body = lines[1..]
+           .reject { |line| line.match?(/^(----|Co-authored|Signed-off)/) || line.empty? }
+           .map { |line| "    > #{line}" }
+           .join("\n")
+    body.empty? ? subject : "#{subject}\n#{body}"
+  }.join("\n")
 
   File.open(changelog, 'r+') do |file|
     new_content = "#{header}\n#{commits}\n\n#{file.read}"
