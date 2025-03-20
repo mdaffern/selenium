@@ -129,7 +129,7 @@ def verify_java_release_targets
   current_targets = []
 
   Bazel.execute('query', [], query) do |output|
-    current_targets = output.lines.map(&:strip).reject(&:empty?)
+    current_targets = output.lines.map(&:strip).reject(&:empty?).select { |line| line.start_with?('//') }
   end
 
   missing_targets = current_targets - JAVA_RELEASE_TARGETS
