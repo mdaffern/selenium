@@ -1185,6 +1185,8 @@ end
 
 at_exit do
   system 'sh', '.git-fixfiles' if File.exist?('.git') && SeleniumRake::Checks.linux?
+rescue Exception => e
+  puts "Do not exit execution when this errors... #{e.inspect}"
 end
 
 def updated_version(current, desired = nil, nightly = nil)
