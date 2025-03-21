@@ -37,14 +37,24 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  determine-languages:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [ "${{ inputs.language }}" == "all" ]; then
+            echo 'matrix={"language":["java","rb","py","dotnet","node"]}' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix={"language":["${{ inputs.language }}"]}' >> $GITHUB_OUTPUT
+          fi
   build-docs:
+    needs: determine-languages
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        language: [java, rb, py, dotnet, node]
+      matrix: ${{ fromJson(needs.determine-languages.outputs.matrix) }}
       fail-fast: false
-    # Only run if the language is selected or "all" was chosen
-    if: ${{ inputs.language == 'all' || inputs.language == matrix.language }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
