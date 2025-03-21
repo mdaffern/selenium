@@ -28,10 +28,10 @@ on:
       sha:
         required: true
         type: string
-    language:
-      required: false
-      type: string
-      default: "all"
+      language:
+        required: false
+        type: string
+        default: "all"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
