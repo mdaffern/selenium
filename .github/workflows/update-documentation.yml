@@ -44,6 +44,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || inputs.sha }}
+      - name: Fetch gh-pages branch
+        run: git fetch origin gh-pages
       - name: Setup git
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
