@@ -98,6 +98,8 @@ jobs:
           delete-branch: true
           branch: api-docs-${{ inputs.version }}-${{ matrix.language }}
           base: gh-pages
+          add-paths: |
+            docs/api/${{ matrix.language }}/**
           title: Update documentation for Selenium ${{ inputs.version }} (${{ matrix.language }})
           body: |
             This PR updates the API documentation for **${{ matrix.language }}** language bindings to version **${{ inputs.version }}**.
