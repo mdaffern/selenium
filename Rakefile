@@ -751,7 +751,7 @@ namespace :rb do
       puts 'Releasing nightly WebDriver gem...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release-nightly')
     else
-      patch_release = ruby_version.split('.').fetch(2, '0').to_i > 0
+      patch_release = ruby_version.split('.').fetch(2, '0').to_i.positive?
 
       puts 'Releasing Ruby gems...'
       Bazel.execute('run', ['--config=release'], '//rb:selenium-webdriver-release')
