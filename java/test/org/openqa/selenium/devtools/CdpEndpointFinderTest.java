@@ -52,12 +52,12 @@ class CdpEndpointFinderTest {
   }
 
   @Test
-  void shouldReturnUriIfPresentAndIsAtTopLevel() {
+  void shouldNotDetectFirefoxDevTools() {
     Capabilities caps =
         new Json().toType("{\"moz:debuggerAddress\": \"localhost:93487\" }", Capabilities.class);
 
     Optional<URI> uri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps);
 
-    assertThat(uri).contains(URI.create("http://localhost:93487"));
+    assertThat(uri).isEmpty();
   }
 }
