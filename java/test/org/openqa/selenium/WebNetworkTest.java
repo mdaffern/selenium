@@ -189,7 +189,7 @@ class WebNetworkTest extends JupiterTestBase {
 
     driver.get(page);
 
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Long entry added events");
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Log entry added events");
   }
 
   @Test
@@ -321,7 +321,7 @@ class WebNetworkTest extends JupiterTestBase {
 
     driver.get(page);
 
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Long entry added events");
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Log entry added events");
   }
 
   @Test
@@ -341,7 +341,7 @@ class WebNetworkTest extends JupiterTestBase {
 
     driver.get(page);
 
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Long entry added events");
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Log entry added events");
   }
 
   @Test
@@ -413,7 +413,7 @@ class WebNetworkTest extends JupiterTestBase {
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
 
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Long entry added events");
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Log entry added events");
   }
 
   @Test
@@ -439,6 +439,6 @@ class WebNetworkTest extends JupiterTestBase {
 
     driver.get(page);
 
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Long entry added events");
+    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("Log entry added events");
   }
 }
