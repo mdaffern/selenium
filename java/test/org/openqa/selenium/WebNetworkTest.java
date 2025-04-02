@@ -409,7 +409,7 @@ class WebNetworkTest extends JupiterTestBase {
   @Ignore(Browser.CHROME)
   @Ignore(Browser.EDGE)
   void canRemoveRequestHandlerThatDoesNotExist() {
-    ((RemoteWebDriver) driver).network().removeAuthenticationHandler(5);
+    ((RemoteWebDriver) driver).network().removeRequestHandler(5);
     page = appServer.whereIs("/bidi/logEntryAdded.html");
     driver.get(page);
 
