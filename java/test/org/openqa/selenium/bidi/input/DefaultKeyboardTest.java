@@ -229,6 +229,9 @@ class DefaultKeyboardTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(
+      value = EDGE,
+      reason = "https://github.com/GoogleChromeLabs/chromium-bidi/issues/2321")
   public void testSelectionSelectByWord() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "MacOS has alternative keyboard");
 
