@@ -1192,6 +1192,7 @@ namespace :all do
     Rake::Task['node:version'].invoke(version)
     Rake::Task['py:version'].invoke(version)
     Rake::Task['dotnet:version'].invoke(version)
+    Rake::Task['rust:version'].invoke(version)
 
     unless version == 'nightly'
       Rake::Task['all:changelogs'].invoke
@@ -1213,6 +1214,7 @@ namespace :all do
     Rake::Task['node:changelog'].invoke
     Rake::Task['py:changelog'].invoke
     Rake::Task['dotnet:changelog'].invoke
+    Rake::Task['rust:changelog'].invoke
   end
 end
 
