@@ -68,7 +68,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
           fetch-tags: true
-          ref: trunk
+          ref: release-preparation-${{ github.event.inputs.version }}
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
