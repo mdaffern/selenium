@@ -1156,11 +1156,6 @@ namespace :all do
     Rake::Task['rb:release'].invoke(*args)
     Rake::Task['dotnet:release'].invoke(*args)
     Rake::Task['node:release'].invoke(*args)
-
-    unless args.include?('nightly')
-      puts 'bump all versions to nightly'
-      Rake::Task['all:version'].invoke('nightly')
-    end
   end
 
   task :lint do
