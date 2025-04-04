@@ -30,19 +30,21 @@ jobs:
         run: |
           git config --local user.email "selenium-ci@users.noreply.github.com"
           git config --local user.name "Selenium CI Bot"
-          if git rev-parse --verify release-${{ github.event.inputs.version }} >/dev/null 2>&1; then
-          git branch -D release-${{ github.event.inputs.version }}
+          if git rev-parse --verify release-preparation-${{ github.event.inputs.version }} >/dev/null 2>&1; then
+          git branch -D release-preparation-${{ github.event.inputs.version }}
           fi
-          git checkout -b release-${{ github.event.inputs.version }}
+          git checkout -b release-preparation-${{ github.event.inputs.version }}
       - name: Update Rust Version
         run: |
           ./go rust:version ${{ github.event.inputs.version }}
-          ./go rust:version:commit
+          ./go rust:changelog
+      - name: Commit Rust updates
+        run: git commit -m "update selenium manager version and rust changelog"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
-          branch: release-${{ github.event.inputs.version }}
+          branch: release-preparation-${{ github.event.inputs.version }}
           force: true
 
   selenium-manager:
@@ -51,7 +53,7 @@ jobs:
     uses: ./.github/workflows/ci-rust.yml
     with:
       release: true
-      branch: release-${{ github.event.inputs.version }}
+      branch: release-preparation-${{ github.event.inputs.version }}
     secrets:
       SELENIUM_CI_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
