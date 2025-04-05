@@ -45,7 +45,7 @@ jobs:
       - id: set-languages
         run: |
           if [ "${{ inputs.language }}" == "all" ]; then
-            echo '"languages=java rb py dotnet node" >> $GITHUB_OUTPUT
+            echo "languages=java rb py dotnet node" >> $GITHUB_OUTPUT
           else
             echo "languages=${{ inputs.language }}" >> $GITHUB_OUTPUT
           fi
