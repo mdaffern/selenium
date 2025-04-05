@@ -11,7 +11,6 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
   github-release:
@@ -32,7 +31,8 @@ jobs:
       - name: Extract version from branch name
         if: github.event.pull_request.merged == true
         run: |
-          VERSION=$(echo $BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          TEMP_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
+          VERSION=$(echo $TEMP_BRANCH_NAME | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Extract version from workflow input
         if: github.event_name == 'workflow_dispatch'
