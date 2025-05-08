@@ -20,6 +20,7 @@ use crate::config::OS::{MACOS, WINDOWS};
 use crate::config::{str_to_os, ManagerConfig};
 use crate::downloads::download_to_tmp_folder;
 use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES, WEBVIEW2_NAME};
+use crate::files::get_win_file_version;
 use crate::files::{
     capitalize, collect_files_from_cache, create_path_if_not_exists, default_cache_folder,
     find_latest_from_cache, get_binary_extension, path_to_string,
@@ -75,8 +76,6 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const ESR: &str = "esr";
-pub const WMIC_COMMAND: &str = "wmic datafile where name='{}' get Version /value";
-pub const WMIC_COMMAND_OS: &str = "wmic os get osarchitecture";
 pub const REG_VERSION_ARG: &str = "version";
 pub const REG_CURRENT_VERSION_ARG: &str = "CurrentVersion";
 pub const REG_PV_ARG: &str = "pv";
@@ -453,8 +452,9 @@ pub trait SeleniumManager {
                 driver_version_command,
             ) {
                 Ok(out) => out,
-                Err(_e) => continue,
+                Err(_) => continue,
             };
+
             let full_browser_version = parse_version(output, self.get_logger()).unwrap_or_default();
             if full_browser_version.is_empty() {
                 continue;
@@ -1158,9 +1158,7 @@ pub trait SeleniumManager {
         let mut commands = Vec::new();
         if WINDOWS.is(self.get_os()) {
             if !escaped_browser_path.is_empty() {
-                let wmic_command =
-                    Command::new_single(format_one_arg(WMIC_COMMAND, &escaped_browser_path));
-                commands.push(wmic_command);
+                return Ok(get_win_file_version(&escaped_browser_path));
             }
             if !self.is_browser_version_unstable() {
                 let reg_command =
