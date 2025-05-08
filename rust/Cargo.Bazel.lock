@@ -1,5 +1,5 @@
 {
-  "checksum": "94dc89c8790518c956fd52cd06689af1557f6c755c7bd1a1414719ef73ac468c",
+  "checksum": "0a67246c8e06c7ca9247a14809232bd389b7d23c80b1c064f7bee1dc07d2f8c1",
   "crates": {
     "addr2line 0.21.0": {
       "name": "addr2line",
@@ -13479,10 +13479,6 @@
               "target": "which"
             },
             {
-              "id": "winapi 0.3.9",
-              "target": "winapi"
-            },
-            {
               "id": "xz2 0.1.7",
               "target": "xz2"
             },
@@ -13491,7 +13487,14 @@
               "target": "zip"
             }
           ],
-          "selects": {}
+          "selects": {
+            "cfg(windows)": [
+              {
+                "id": "winapi 0.3.9",
+                "target": "winapi"
+              }
+            ]
+          }
         },
         "deps_dev": {
           "common": [
@@ -18842,36 +18845,17 @@
         ],
         "crate_features": {
           "common": [
+            "fileapi",
+            "handleapi",
+            "processthreadsapi",
+            "std",
             "sysinfoapi",
+            "winbase",
+            "winerror",
             "winnt",
             "winver"
           ],
-          "selects": {
-            "aarch64-pc-windows-msvc": [
-              "fileapi",
-              "handleapi",
-              "processthreadsapi",
-              "std",
-              "winbase",
-              "winerror"
-            ],
-            "i686-pc-windows-msvc": [
-              "fileapi",
-              "handleapi",
-              "processthreadsapi",
-              "std",
-              "winbase",
-              "winerror"
-            ],
-            "x86_64-pc-windows-msvc": [
-              "fileapi",
-              "handleapi",
-              "processthreadsapi",
-              "std",
-              "winbase",
-              "winerror"
-            ]
-          }
+          "selects": {}
         },
         "deps": {
           "common": [
