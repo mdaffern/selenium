@@ -189,7 +189,7 @@ pub fn uncompress_sfx(compressed_file: &str, target: &Path, log: &Logger) -> Res
 
     let zip_parent_str = path_to_string(zip_parent);
     let core_str = format!(r"{}\core", zip_parent_str);
-    move_folder_content(&core_str, &target, &log)?;
+    move_folder_content(&core_str, target, log)?;
 
     Ok(())
 }
@@ -304,7 +304,7 @@ pub fn uncompress_deb(
         fs::remove_file(Path::new(&link)).unwrap_or_default();
     }
 
-    move_folder_content(&opt_edge_str, &target, &log)?;
+    move_folder_content(&opt_edge_str, target, log)?;
 
     Ok(())
 }

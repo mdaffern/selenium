@@ -192,7 +192,7 @@ pub trait SeleniumManager {
         let driver_name_with_extension = self.get_driver_name_with_extension();
 
         let mut lock = Lock::acquire(
-            &self.get_logger(),
+            self.get_logger(),
             &driver_path_in_cache,
             Some(driver_name_with_extension.clone()),
         )?;
@@ -325,7 +325,7 @@ pub trait SeleniumManager {
             }
 
             let browser_path_in_cache = self.get_browser_path_in_cache()?;
-            let mut lock = Lock::acquire(&self.get_logger(), &browser_path_in_cache, None)?;
+            let mut lock = Lock::acquire(self.get_logger(), &browser_path_in_cache, None)?;
             if !lock.exists() && browser_binary_path.exists() {
                 self.get_logger().debug(format!(
                     "Browser already in cache: {}",
@@ -350,7 +350,7 @@ pub trait SeleniumManager {
             uncompress(
                 &driver_zip_file,
                 &browser_path_in_cache,
-                &self.get_logger(),
+                self.get_logger(),
                 self.get_os(),
                 None,
                 browser_label_for_download,
