@@ -375,10 +375,6 @@ public interface DriverCommand {
     return new CommandPayload(ACTIONS, Map.of("actions", actions));
   }
 
-  static CommandPayload IME_ACTIVATE_ENGINE(String engine) {
-    return new CommandPayload(SET_ALERT_VALUE, Map.of("engine", engine));
-  }
-
   static CommandPayload SET_CURRENT_WINDOW_POSITION(Point targetPosition) {
     return new CommandPayload(
         SET_CURRENT_WINDOW_POSITION, Map.of("x", targetPosition.x, "y", targetPosition.y));
