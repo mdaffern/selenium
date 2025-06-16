@@ -159,6 +159,9 @@ class BrowsingContextTest extends JupiterTestBase {
     BrowsingContextInfo info = contextInfoList.get(0);
     assertThat(info.getChildren()).isNull(); // since depth is 0
     assertThat(info.getId()).isEqualTo(referenceContextId);
+    assertThat(info.getOriginalOpener()).isNull();
+    assertThat(info.getClientWindow()).isNotNull();
+    assertThat(info.getUserContext()).isEqualTo("default");
   }
 
   @Test
