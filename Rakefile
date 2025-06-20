@@ -965,7 +965,7 @@ namespace :java do
     read_m2_user_pass unless ENV['MAVEN_PASSWORD'] && ENV['MAVEN_USER']
 
     repo = nightly ? 'content/repositories/snapshots' : 'service/local/staging/deploy/maven2'
-    ENV['MAVEN_REPO'] = "https://oss.sonatype.org/#{repo}"
+    ENV['MAVEN_REPO'] = "https://central.sonatype.org/#{repo}"
     ENV['GPG_SIGN'] = (!nightly).to_s
 
     if nightly
