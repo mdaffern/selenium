@@ -169,8 +169,8 @@ importers:
         specifier: ^1.9.1
         version: 1.9.1(supports-color@10.0.0)
       sinon:
-        specifier: ^19.0.2
-        version: 19.0.2
+        specifier: ^19.0.5
+        version: 19.0.5
       supports-color:
         specifier: ^10.0.0
         version: 10.0.0
@@ -6813,8 +6813,8 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
-  /sinon@19.0.2:
-    resolution: {integrity: sha512-euuToqM+PjO4UgXeLETsfQiuoyPXlqFezr6YZDFwHR3t4qaX0fZUe1MfPMznTL5f8BWrVS89KduLdMUsxFCO6g==}
+  /sinon@19.0.5:
+    resolution: {integrity: sha512-r15s9/s+ub/d4bxNXqIUmwp6imVSdTorIRaxoecYjqTVLZ8RuoXr/4EDGwIBo6Waxn7f2gnURX9zuhAfCwaF6Q==}
     dependencies:
       '@sinonjs/commons': 3.0.1
       '@sinonjs/fake-timers': 13.0.5
