@@ -52,8 +52,6 @@ import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
-import org.openqa.selenium.html5.Location;
-import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.logging.EventType;
@@ -61,7 +59,6 @@ import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -79,15 +76,13 @@ public class ChromiumDriver extends RemoteWebDriver
         HasLaunchApp,
         HasLogEvents,
         HasNetworkConditions,
-        HasPermissions,
-        LocationContext {
+        HasPermissions {
 
   public static final Predicate<String> IS_CHROMIUM_BROWSER =
       name -> CHROME.is(name) || EDGE.is(name) || OPERA.is(name);
   private static final Logger LOG = Logger.getLogger(ChromiumDriver.class.getName());
 
   private final Capabilities capabilities;
-  private final RemoteLocationContext locationContext;
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
@@ -102,7 +97,6 @@ public class ChromiumDriver extends RemoteWebDriver
   protected ChromiumDriver(
       CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
-    locationContext = new RemoteLocationContext(getExecuteMethod());
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     networkConditions =
         new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
@@ -278,19 +272,6 @@ public class ChromiumDriver extends RemoteWebDriver
 
     getDevTools().createSessionIfThereIsNotOne(getWindowHandle());
     getDevTools().getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials);
-  }
-
-  @Override
-  @Deprecated
-  public Location location() {
-    return locationContext.location();
-  }
-
-  @Override
-  @Deprecated
-  public void setLocation(Location location) {
-    Require.nonNull("Location", location);
-    locationContext.setLocation(location);
   }
 
   @Override
