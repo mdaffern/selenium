@@ -441,13 +441,11 @@ public class HttpCommandExecutor : ICommandExecutor
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             StringBuilder requestLogMessageBuilder = new();
-            requestLogMessageBuilder.AppendFormat(">> {0} RequestUri: {1}, Content: {2}, Headers: {3}",
+            requestLogMessageBuilder.AppendFormat(">> {0} {1}",
                 request.Method,
-                request.RequestUri?.ToString() ?? "null",
-                request.Content?.ToString() ?? "null",
-                request.Headers?.Count());
+                request.RequestUri?.ToString() ?? "null");
 
-            if (request.Content != null)
+            if (request.Content is not null)
             {
 #if NET8_0_OR_GREATER
                 var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -463,7 +461,7 @@ public class HttpCommandExecutor : ICommandExecutor
 
             StringBuilder responseLogMessageBuilder = new();
 
-            responseLogMessageBuilder.AppendFormat("<< StatusCode: {0}, ReasonPhrase: {1}, Content: {2}, Headers: {3}", (int)response.StatusCode, response.ReasonPhrase, response.Content, response.Headers?.Count());
+            responseLogMessageBuilder.AppendFormat("<< {0} {1}", (int)response.StatusCode, response.ReasonPhrase);
 
             if (!response.IsSuccessStatusCode && response.Content != null)
             {
