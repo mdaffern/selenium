@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.BiDi.Network;
 
 public sealed partial class NetworkModule(Broker broker) : Module(broker)
 {
-    internal async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
+    public async Task<Intercept> AddInterceptAsync(IEnumerable<InterceptPhase> phases, AddInterceptOptions? options = null)
     {
         var @params = new AddInterceptCommandParameters(phases, options?.Contexts, options?.UrlPatterns);
 
@@ -35,7 +35,7 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
         return result.Intercept;
     }
 
-    internal async Task<EmptyResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
+    public async Task<EmptyResult> RemoveInterceptAsync(Intercept intercept, RemoveInterceptOptions? options = null)
     {
         var @params = new RemoveInterceptCommandParameters(intercept);
 
@@ -49,45 +49,45 @@ public sealed partial class NetworkModule(Broker broker) : Module(broker)
         return await Broker.ExecuteCommandAsync<SetCacheBehaviorCommand, EmptyResult>(new SetCacheBehaviorCommand(@params), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
+    public async Task<EmptyResult> ContinueRequestAsync(Request request, ContinueRequestOptions? options = null)
     {
         var @params = new ContinueRequestCommandParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.Method, options?.Url);
 
         return await Broker.ExecuteCommandAsync<ContinueRequestCommand, EmptyResult>(new ContinueRequestCommand(@params), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null)
+    public async Task<EmptyResult> ContinueResponseAsync(Request request, ContinueResponseOptions? options = null)
     {
         var @params = new ContinueResponseCommandParameters(request, options?.Cookies, options?.Credentials, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
         return await Broker.ExecuteCommandAsync<ContinueResponseCommand, EmptyResult>(new ContinueResponseCommand(@params), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> FailRequestAsync(Request request, FailRequestOptions? options = null)
+    public async Task<EmptyResult> FailRequestAsync(Request request, FailRequestOptions? options = null)
     {
         var @params = new FailRequestCommandParameters(request);
 
         return await Broker.ExecuteCommandAsync<FailRequestCommand, EmptyResult>(new FailRequestCommand(@params), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ProvideResponseAsync(Request request, ProvideResponseOptions? options = null)
+    public async Task<EmptyResult> ProvideResponseAsync(Request request, ProvideResponseOptions? options = null)
     {
         var @params = new ProvideResponseCommandParameters(request, options?.Body, options?.Cookies, options?.Headers, options?.ReasonPhrase, options?.StatusCode);
 
         return await Broker.ExecuteCommandAsync<ProvideResponseCommand, EmptyResult>(new ProvideResponseCommand(@params), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
+    public async Task<EmptyResult> ContinueWithAuthAsync(Request request, AuthCredentials credentials, ContinueWithAuthCredentialsOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthCredentials(request, credentials)), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null)
+    public async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthDefaultCredentialsOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthDefaultCredentials(request)), options).ConfigureAwait(false);
     }
 
-    internal async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null)
+    public async Task<EmptyResult> ContinueWithAuthAsync(Request request, ContinueWithAuthCancelCredentialsOptions? options = null)
     {
         return await Broker.ExecuteCommandAsync<ContinueWithAuthCommand, EmptyResult>(new ContinueWithAuthCommand(new ContinueWithAuthCancelCredentials(request)), options).ConfigureAwait(false);
     }
