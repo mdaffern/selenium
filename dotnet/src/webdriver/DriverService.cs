@@ -255,13 +255,15 @@ public abstract class DriverService : ICommandServer
         DriverProcessStartingEventArgs eventArgs = new DriverProcessStartingEventArgs(this.driverServiceProcess.StartInfo);
         this.OnDriverProcessStarting(eventArgs);
 
+        // Important: Start the process and immediately begin reading the output and error streams to avoid IO deadlocks.
         this.driverServiceProcess.Start();
-        bool serviceAvailable = this.WaitForServiceInitialization();
-        DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
-        this.OnDriverProcessStarted(processStartedEventArgs);
-
         this.driverServiceProcess.BeginOutputReadLine();
         this.driverServiceProcess.BeginErrorReadLine();
+
+        bool serviceAvailable = this.WaitForServiceInitialization();
+
+        DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
+        this.OnDriverProcessStarted(processStartedEventArgs);
 
         if (!serviceAvailable)
         {
@@ -286,6 +288,12 @@ public abstract class DriverService : ICommandServer
             if (disposing)
             {
                 this.Stop();
+
+                if (this.driverServiceProcess is not null)
+                {
+                    this.driverServiceProcess.OutputDataReceived -= this.OnDriverProcessDataReceived;
+                    this.driverServiceProcess.ErrorDataReceived -= this.OnDriverProcessDataReceived;
+                }
             }
 
             this.isDisposed = true;
