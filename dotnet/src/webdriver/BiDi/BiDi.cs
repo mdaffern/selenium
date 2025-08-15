@@ -169,7 +169,7 @@ public sealed class BiDi : IAsyncDisposable
         return SessionModule.StatusAsync();
     }
 
-    public static async Task<BiDi> ConnectAsync(string url)
+    public static async Task<BiDi> ConnectAsync(string url, BiDiOptions? options = null)
     {
         var bidi = new BiDi(url);
 
